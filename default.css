@@ -1,1 +1,111 @@
+/* Variable */
+:root{
+    --couleurPrincipale1: #FFB9B9;
+    --couleurSecondaire1: #FFDDD2;
+    --couleurPrincipale2: #FFACC7;
+    --couleurSecondaire2: #FF8DC7;
+    }
 
+/* ***************************** */
+
+
+/* Police personalisée */
+
+@font-face{
+    font-family: "little bird";
+    src: url('./police/LittleBird.ttf')
+}
+
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+margin: 0;
+background: rgba(29,93,41,0.7);
+background: radial-gradient(circle farthest-corner at center center, rgba(29,93,41,0.7) 1%, rgba(0,0,0,0.83) 100%);
+background: -webkit-radial-gradient(circle farthest-corner at center center, rgba(29,93,41,0.7) 1%, rgba(0,0,0,0.83) 100%);
+background: -moz-radial-gradient(circle farthest-corner at center center, rgba(29,93,41,0.7) 1%, rgba(0,0,0,0.83) 100%);
+}
+
+.container{
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.title{
+    margin-bottom: 5px;
+    font-size: 3em;
+    color: white;
+    font-family: 'little bird', Times, serif;
+}
+
+.craie{
+    width: 30px;
+    text-align: center;
+    background-image: url(./img/craie_blanche.png);
+    color: white;
+    font-family: 'little bird', Times, serif;
+}
+
+#jeuContainer{
+    width: 800px;
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: start;
+    align-items: center;
+}
+
+#tableauContainer{
+    width: 100%;
+    position: relative;
+    height: 450px;
+}
+
+#tableauContainer img {
+    position: absolute;
+    
+    /* top: 0;
+    left: 0;
+    /* width: 100%;
+    background-image: url(./img/tableauCraie2.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:cover; */
+  }
+
+#imgTableauCraie{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#potence{
+    width: 25%;
+    top: 25%;
+    left: 40%;
+    z-index: 2;
+}
+
+#craiesContainer{
+    width: 80%;
+    height: 150px;
+    border-radius: 8px;
+    background-image: url(./img/font_bois.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: 1px -1px 68px -4px rgba(0,0,0,1) inset;
+    -webkit-box-shadow: 1px -1px 68px -4px rgba(0,0,0,1) inset;
+    -moz-box-shadow: 1px -1px 68px -4px rgba(0,0,0,1) inset;
+
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(13,auto);
+    grid-template-rows: repeat(2, 50%);
+
+}
