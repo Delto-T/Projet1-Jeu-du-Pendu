@@ -55,6 +55,20 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     transform: scale(1.2);
 }
 
+.craieDisable{
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.267);
+    color: silver;
+}
+
+.craieTrouvee{
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.267);
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
 .lettreADecouvrir{
     display: flex;
     flex-flow: column nowrap;
@@ -90,10 +104,11 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    padding-bottom: 2%;
 
     display: flex;
     flex-flow: column nowrap;
-    justify-content: center;
+    justify-content:center;
     align-items: center;
     gap: 20px;
 }

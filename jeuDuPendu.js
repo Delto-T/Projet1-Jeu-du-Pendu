@@ -1,15 +1,17 @@
 
+
+const urlApiMotAleatoire = "https://trouve-mot.fr/api/sizemax/10/5";
 //Fonctions
 
 function initialisationTouchAlphabet () {
     alphabet.forEach( lettre => {
         let nouvelleLettre = document.createElement('div');
-        nouvelleLettre.innerHTML = `<div class='craie'>${lettre}</div>`;
+        nouvelleLettre.innerHTML = `<div class='craie' name="${lettre}">${lettre}</div>`;
         grilleAlphabet.append(nouvelleLettre);
     });
 };
 
-function initialisationMotATrouver () {
+function initialisationMotATrouver (motADeviner) {
     [...motADeviner].map( () => {
         let nouvelleLettre = document.createElement('span');
         nouvelleLettre.innerHTML = `
@@ -19,18 +21,97 @@ function initialisationMotATrouver () {
         </span>`;
         document.querySelector('#motADecouvrir').append(nouvelleLettre);
     });
-  }
+}
+
+
+async function recupererMot() {
+
+    const requeteRecupererCinqMots = await fetch(urlApiMotAleatoire,{method:'GET'});
+
+    if(!requeteRecupererCinqMots.ok){
+        alert("Une erreur s'est produite veuillez recharger la page.")
+    }else{
+        let cinqMotAleatoire = await requeteRecupererCinqMots.json();
+
+        console.log(cinqMotAleatoire);
+        const regex = /[ý,þ,ÿ,À,Á,Â,Ã,Ä,Å,Æ,Ç,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,Þ,ß,à,á,â,ã,ä,å,æ,ç,Ë,Ì,Ü,Ý,Þ,Í,è,é,ê,ë,ì,í,î,ï,ð,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,ë,î,ï,ð,Ë,Ì,Í]/g;
+        
+        for(mot of cinqMotAleatoire){
+            let found = mot.name.match(regex);
+  
+            if(found === null){
+                initialisationMotATrouver(mot.name);
+                console.log(mot.name)
+                return mot.name;
+            }
+        }
+        
+    };
+
+};
+
+function jeuPerdu () { 
+    // Désactiver toute les touches
+    document.querySelectorAll('.craie').forEach( craieElement => craieElement.className = "craie craieDisable" );
+    // Faire apparaitre PERDU à la place du mots
+
+    // faire Clignoter en 0 et 7 la potence
+    // Bouton rejouer à la place de la potence
+    console.log("PERDU");
+ };
+
+function animationPendu() { 
+    let phasePendu = 0;
+
+    let phasePenduClosure = () => {
+        ++phasePendu
+        if(phasePendu < 7){
+            document.querySelector("#potence").setAttribute('src',`./img/pendu_${phasePendu}.png`);       
+        }else{
+            document.querySelector("#potence").setAttribute('src',`./img/pendu_${phasePendu}.png`);  
+            jeuPerdu();
+        }
+    };
+
+    return phasePenduClosure;
+ };
+
+
+function verifierLettre (lettreAVerifier){
+    let lettreEnConcordance = [];
+    let motADevinerTableau =[...motADeviner] 
+
+    for(let i=0; i < motADevinerTableau.length; i++){
+        if(lettreAVerifier.target.textContent === motADevinerTableau[i]){
+            lettreEnConcordance.push(i);
+            lettreAVerifier.target.className = "craie craieTrouvee";
+            //afficherLettre();
+        }
+    };
+
+    if(lettreEnConcordance.length === 0){
+        lettreAVerifier.target.className = "craie craieDisable";
+        monAnimationPendu();
+    };
+    console.log(lettreEnConcordance);
+
+};
 
 //Variable
 let alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","v","x","y","z"]
-let motADeviner = "caroline";
+let motADeviner;
+let grilleAlphabet = document.querySelector('#craiesContainer');
 let motTrouve;
+let monAnimationPendu = animationPendu();
 
-console.log(motTrouve);
+
 
 // Génération du DOM
-let grilleAlphabet = document.querySelector('#craiesContainer');
-
-
+recupererMot().then(motGenere => motADeviner = motGenere );
 initialisationTouchAlphabet();
-initialisationMotATrouver();
+
+
+// Listener
+let lettreAlphabet = document.querySelectorAll(".craie");
+lettreAlphabet.forEach(lettre => lettre.addEventListener('click',(e) => verifierLettre(e)));
+console.log(motADeviner);
