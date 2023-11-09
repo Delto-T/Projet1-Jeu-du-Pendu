@@ -11,17 +11,26 @@ function initialisationTouchAlphabet () {
     });
 };
 
-function initialisationMotATrouver (motADeviner) {
-    [...motADeviner].map( () => {
+function initialisationMotAAfficher (motAAfficher , finDuJeu = false) {
+    let indexSpanDesLettre = 0;
+
+    if(finDuJeu){
+        document.querySelectorAll('.lettreADecouvrir').forEach( element => element.remove());
+    }
+
+    [...motAAfficher].forEach( lettre => {
         let nouvelleLettre = document.createElement('span');
         nouvelleLettre.innerHTML = `
         <span class="lettreADecouvrir">
-        <span class="lettreTrouvee">X</span>
-        <img src="./img/trait_1.png" alt="trait à la craie">
+            <span class="${finDuJeu ? "lettreTrouveeVisible" : "lettreTrouvee"}" id="lettre_${finDuJeu ? indexSpanDesLettre * 100 : indexSpanDesLettre.toString()}">${lettre}</span>
+            <img src="./img/trait_1.png" alt="trait à la craie">
         </span>`;
+
         document.querySelector('#motADecouvrir').append(nouvelleLettre);
+        indexSpanDesLettre++;
     });
-}
+
+};
 
 
 async function recupererMot() {
@@ -32,15 +41,12 @@ async function recupererMot() {
         alert("Une erreur s'est produite veuillez recharger la page.")
     }else{
         let cinqMotAleatoire = await requeteRecupererCinqMots.json();
-
-        console.log(cinqMotAleatoire);
         const regex = /[ý,þ,ÿ,À,Á,Â,Ã,Ä,Å,Æ,Ç,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,Þ,ß,à,á,â,ã,ä,å,æ,ç,Ë,Ì,Ü,Ý,Þ,Í,è,é,ê,ë,ì,í,î,ï,ð,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,ë,î,ï,ð,Ë,Ì,Í]/g;
         
         for(mot of cinqMotAleatoire){
             let found = mot.name.match(regex);
   
             if(found === null){
-                initialisationMotATrouver(mot.name);
                 console.log(mot.name)
                 return mot.name;
             }
@@ -50,30 +56,43 @@ async function recupererMot() {
 
 };
 
-function jeuPerdu () { 
+function afficherLettre(tableauIndex){
+    console.log(tableauIndex);
+    tableauIndex.forEach(index => {
+        document.querySelector(`#lettre_${index.toString()}`).textContent = motADeviner[index];
+        document.querySelector(`#lettre_${index.toString()}`).style.visibility = "visible";
+        motAAfficher[index] = motADeviner[index];
+    });
+};
+
+function afficherButtonRestart() {
+    
+};
+
+
+function finDujJeu (resultat) { 
     // Désactiver toute les touches
     document.querySelectorAll('.craie').forEach( craieElement => craieElement.className = "craie craieDisable" );
-    // Faire apparaitre PERDU à la place du mots
-
     // faire Clignoter en 0 et 7 la potence
     // Bouton rejouer à la place de la potence
-    console.log("PERDU");
+    afficherButtonRestart();
+    if(resultat === "perdu"){
+        initialisationMotAAfficher("PERDU", true);
+    }else if (resultat === "gagner"){
+        initialisationMotAAfficher("GAGNER", true);
+    };
+
  };
 
-function animationPendu() { 
-    let phasePendu = 0;
-
-    let phasePenduClosure = () => {
+function gestionDesViesEtDeLaPotence() { 
         ++phasePendu
+        // console.log(phasePendu);
         if(phasePendu < 7){
             document.querySelector("#potence").setAttribute('src',`./img/pendu_${phasePendu}.png`);       
         }else{
             document.querySelector("#potence").setAttribute('src',`./img/pendu_${phasePendu}.png`);  
-            jeuPerdu();
-        }
-    };
-
-    return phasePenduClosure;
+            finDujJeu("perdu");
+        };
  };
 
 
@@ -85,33 +104,48 @@ function verifierLettre (lettreAVerifier){
         if(lettreAVerifier.target.textContent === motADevinerTableau[i]){
             lettreEnConcordance.push(i);
             lettreAVerifier.target.className = "craie craieTrouvee";
-            //afficherLettre();
         }
     };
 
+
+
     if(lettreEnConcordance.length === 0){
         lettreAVerifier.target.className = "craie craieDisable";
-        monAnimationPendu();
+        gestionDesViesEtDeLaPotence();
+    }else{
+        afficherLettre(lettreEnConcordance);
     };
-    console.log(lettreEnConcordance);
 
+};
+
+function verifierGagner () {
+    if(!motAAfficher.includes("=")){
+        finDujJeu("gagner")
+    }
 };
 
 //Variable
 let alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","v","x","y","z"]
 let motADeviner;
+let motAAfficher = [];
 let grilleAlphabet = document.querySelector('#craiesContainer');
-let motTrouve;
-let monAnimationPendu = animationPendu();
+let phasePendu = 0;
+
 
 
 
 // Génération du DOM
-recupererMot().then(motGenere => motADeviner = motGenere );
+recupererMot().then(motGenere => {
+    motADeviner = motGenere;
+    [...motGenere].forEach( () => motAAfficher.push("=") );
+    initialisationMotAAfficher(motAAfficher);
+});
 initialisationTouchAlphabet();
 
 
 // Listener
 let lettreAlphabet = document.querySelectorAll(".craie");
-lettreAlphabet.forEach(lettre => lettre.addEventListener('click',(e) => verifierLettre(e)));
-console.log(motADeviner);
+lettreAlphabet.forEach(lettre => {
+    lettre.addEventListener('click',(e) => verifierLettre(e));
+    lettre.addEventListener('click', verifierGagner);
+});

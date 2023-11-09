@@ -85,6 +85,10 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     visibility: hidden;
 }
 
+.lettreTrouveeVisible{
+    visibility: visible;
+}
+
 
 #jeuContainer{
     width: 800px;
