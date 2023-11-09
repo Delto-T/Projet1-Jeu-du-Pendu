@@ -147,6 +147,39 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     transform: scale(1.2);
 }
 
+#rejouer{
+    height: 175px;
+    color: white;
+    font-family: 'little bird', Times, serif;
+    font-size: 2.8em;
+    z-index: 2;
+    text-decoration: none;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+#rejouer p{
+    margin: 0;
+}
+
+#rejouer img{
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    transform: scale(1.5);
+}
+
+#rejouer:hover{
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.267);
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
 #potence{
     width: 25%;
     z-index: 2;

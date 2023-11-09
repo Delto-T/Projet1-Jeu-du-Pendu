@@ -65,8 +65,16 @@ function afficherLettre(tableauIndex){
     });
 };
 
-function afficherButtonRestart() {
-    
+function afficherButtonRestart() { 
+    document.querySelector('#potence').remove()
+    document.querySelector("#tableauContainer").style.gap = "45px";
+    let rejouerElement = document.createElement('a');
+    rejouerElement.id = "rejouer";
+    rejouerElement.href = "./index.html";
+    rejouerElement.innerHTML = `
+        <p>Rejouer ?</p>
+        <img src="./img/flecheRejouerOk.png" alt="potence blanche sans pendu" id="potence">`;
+    document.querySelector("#tableauContainer").insertBefore(rejouerElement,document.querySelector('#motADecouvrir'));
 };
 
 
