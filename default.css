@@ -45,6 +45,7 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     justify-content: center;
     align-items: center;
 
+    cursor: pointer;
     transition: transform .1s;
 }
 
@@ -132,6 +133,8 @@ background: -moz-radial-gradient(circle farthest-corner at center center, rgba(2
     justify-content: start;
     align-items: center;
     gap: 5px;
+
+    cursor: pointer;
 }
 
 #buttonSolution img{

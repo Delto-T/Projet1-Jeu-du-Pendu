@@ -1,8 +1,11 @@
 
 
+// url de l'api pour récuperer un mot aléatoire.
 const urlApiMotAleatoire = "https://trouve-mot.fr/api/sizemax/10/5";
+
 //Fonctions
 
+//FOnction permettant d'initialiset le clavier à cliquer lors de l'initialisation de la page
 function initialisationTouchAlphabet () {
     alphabet.forEach( lettre => {
         let nouvelleLettre = document.createElement('div');
@@ -11,6 +14,7 @@ function initialisationTouchAlphabet () {
     });
 };
 
+// Fonction permettant d'initialiser les tirets à la place des lettres du mot à deviner. Cette fonction sert aussi a afficher Perdu ou Gagner à la fin du jeu
 function initialisationMotAAfficher (motAAfficher , finDuJeu = false) {
     let indexSpanDesLettre = 0;
 
@@ -32,7 +36,7 @@ function initialisationMotAAfficher (motAAfficher , finDuJeu = false) {
 
 };
 
-
+// Requete sur une API servant à récupérer 5 mot entre 2 et 10 lettre,  le premier des cinq mots sans caractère spéciale sera retenue
 async function recupererMot() {
 
     const requeteRecupererCinqMots = await fetch(urlApiMotAleatoire,{method:'GET'});
@@ -45,9 +49,8 @@ async function recupererMot() {
         
         for(mot of cinqMotAleatoire){
             let found = mot.name.match(regex);
-  
+
             if(found === null){
-                console.log(mot.name)
                 return mot.name;
             }
         }
@@ -56,8 +59,9 @@ async function recupererMot() {
 
 };
 
+// Fonction servant à afficher les lettres du mot à trouver
 function afficherLettre(tableauIndex){
-    console.log(tableauIndex);
+
     tableauIndex.forEach(index => {
         document.querySelector(`#lettre_${index.toString()}`).textContent = motADeviner[index];
         document.querySelector(`#lettre_${index.toString()}`).style.visibility = "visible";
@@ -65,6 +69,7 @@ function afficherLettre(tableauIndex){
     });
 };
 
+// Fonction servant à afficher le bouton restart lorsque la partie est finie
 function afficherButtonRestart() { 
     document.querySelector('#potence').remove()
     document.querySelector("#tableauContainer").style.gap = "45px";
@@ -78,23 +83,23 @@ function afficherButtonRestart() {
 };
 
 
+// Fonction permettant de gérer la fin du jeu en fonction si c'est gagné ou perdu
 function finDujJeu (resultat) { 
-    // Désactiver toute les touches
+    // Désactiver toute les lettres à cliquer pour l'utilisateur
     document.querySelectorAll('.craie').forEach( craieElement => craieElement.className = "craie craieDisable" );
-    // faire Clignoter en 0 et 7 la potence
+
     // Bouton rejouer à la place de la potence
     afficherButtonRestart();
     if(resultat === "perdu"){
         initialisationMotAAfficher("PERDU", true);
     }else if (resultat === "gagner"){
-        initialisationMotAAfficher("GAGNER", true);
+        initialisationMotAAfficher("GAGNE", true);
     };
-
  };
 
+// Fonction permettant de gérer l'affichage de la potence mais aussi de déclancher la fin du jeu "perdu"
 function gestionDesViesEtDeLaPotence() { 
-        ++phasePendu
-        // console.log(phasePendu);
+        ++phasePendu;
         if(phasePendu < 7){
             document.querySelector("#potence").setAttribute('src',`./img/pendu_${phasePendu}.png`);       
         }else{
@@ -104,18 +109,18 @@ function gestionDesViesEtDeLaPotence() {
  };
 
 
+ // Fonction permettant de vérifier la lettre cliqué avec les lettres du mots à trouver.
 function verifierLettre (lettreAVerifier){
     let lettreEnConcordance = [];
     let motADevinerTableau =[...motADeviner] 
 
+    // Permet de récupérer l'indice des lettres du mot à trouver en correspondant avec la lettre cliquée
     for(let i=0; i < motADevinerTableau.length; i++){
         if(lettreAVerifier.target.textContent === motADevinerTableau[i]){
             lettreEnConcordance.push(i);
             lettreAVerifier.target.className = "craie craieTrouvee";
-        }
+        };
     };
-
-
 
     if(lettreEnConcordance.length === 0){
         lettreAVerifier.target.className = "craie craieDisable";
@@ -126,14 +131,36 @@ function verifierLettre (lettreAVerifier){
 
 };
 
+
+// Permet de savoir si la partie est fini avec le sénario Gagné
 function verifierGagner () {
     if(!motAAfficher.includes("=")){
-        finDujJeu("gagner")
-    }
+        finDujJeu("gagner");
+    };
 };
 
-//Variable
-let alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","v","x","y","z"]
+function proposerMotAValidation() { 
+    // A coder
+    // Recoit un mot si c'est le bon finDuJeu => Gagner sinon finDuJeu = PERDU
+ };
+
+
+function verifierMotProposerHandler () {
+    if(confirm("Etes vous sûr de tenter le tout pour le tout ? \n Si votreproposition n'est pas la bonne vous aurez perdu.")){
+        let propositionUser = prompt("Veuillez rentrer le mot auquel vous pensez ?")
+
+        if(propositionUser === motADeviner){
+            finDujJeu("gagner");
+        }else{
+            finDujJeu("perdu");
+        };
+    };
+}
+
+
+
+//Variables
+let alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 let motADeviner;
 let motAAfficher = [];
 let grilleAlphabet = document.querySelector('#craiesContainer');
@@ -142,9 +169,10 @@ let phasePendu = 0;
 
 
 
-// Génération du DOM
+// Génération du DOM suite à la récupération du mot à deviner
 recupererMot().then(motGenere => {
     motADeviner = motGenere;
+    // console.log(motADeviner);
     [...motGenere].forEach( () => motAAfficher.push("=") );
     initialisationMotAAfficher(motAAfficher);
 });
@@ -152,8 +180,10 @@ initialisationTouchAlphabet();
 
 
 // Listener
-let lettreAlphabet = document.querySelectorAll(".craie");
-lettreAlphabet.forEach(lettre => {
+let lettreAlphabetHandler = document.querySelectorAll(".craie");
+lettreAlphabetHandler.forEach(lettre => {
     lettre.addEventListener('click',(e) => verifierLettre(e));
     lettre.addEventListener('click', verifierGagner);
 });
+
+document.querySelector('#buttonSolution').addEventListener('click',verifierMotProposerHandler);
