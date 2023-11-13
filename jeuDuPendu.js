@@ -5,7 +5,7 @@ const urlApiMotAleatoire = "https://trouve-mot.fr/api/sizemax/10/5";
 
 //Fonctions
 
-//FOnction permettant d'initialiset le clavier à cliquer lors de l'initialisation de la page
+//Fonction permettant d'initialiset le clavier à cliquer lors de l'initialisation de la page
 function initialisationTouchAlphabet () {
     alphabet.forEach( lettre => {
         let nouvelleLettre = document.createElement('div');
@@ -87,6 +87,9 @@ function afficherButtonRestart() {
 function finDujJeu (resultat) { 
     // Désactiver toute les lettres à cliquer pour l'utilisateur
     document.querySelectorAll('.craie').forEach( craieElement => craieElement.className = "craie craieDisable" );
+
+    //Retire le bouton Mot trouvé
+    document.querySelector('#buttonSolution').remove();
 
     // Bouton rejouer à la place de la potence
     afficherButtonRestart();
